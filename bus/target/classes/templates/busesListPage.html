@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+	<head>
+		 <meta charset="UTF-8">
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		 <link rel="stylesheet" th:href="@{/css/styleBusesList.css}">
+		 <title>Bus Booking</title>
+	</head>
+	
+	<body>
+		<!-- Filters -->
+		<div class="filters">
+			<h3>Filters</h3>
+			<div id="seatType">
+				<strong>Seat Type</strong><br>
+				<input type="checkbox" id="normal" value="normal"> Normal<br>
+				<input type="checkbox" id="semi-sleeper" value="semi-sleeper"> Semi-Sleeper<br>
+				<input type="checkbox" id="sleeper" value="sleeper"> Sleeper<br>
+			</div>
+			<br>
+			<div id="acType">
+				<strong>AC Type</strong><br>
+				<input type="checkbox" id="ac" value="AC"> AC<br>
+				<input type="checkbox" id="non-ac" value="NON-AC"> NON-AC<br>
+			</div>
+			<br>
+			<div id="departureSlot">
+				<strong>Departure Time</strong><br>
+				<input type="checkbox" id="morning" value="Morning"> Morning<br>
+				<input type="checkbox" id="afternoon" value="Afternoon"> Afternoon<br>
+				<input type="checkbox" id="evening" value="Evening"> Evening<br>
+				<input type="checkbox" id="night" value="Night"> Night<br>
+			</div>
+		</div>
+		
+		<!-- Bus Listings -->
+		<div class="bus-listings">
+			<h2>Available Buses</h2>
+			
+			
+			
+			
+			<!-- <div class="bus-card">
+				<h4>Express 1</h4>
+				<p>Route: Bengaluru → Chennai</p>
+				<p>Time: 08:00 AM – 11:00 PM</p>
+				<p>Seat Type: Normal, Semi-Sleeper</p>
+				<p>AC Type: AC</p>
+				<p>Price: ₹1200</p>
+				<button class="book-btn">Book Now</button>
+			</div>
+			
+			<div class="bus-card">
+				<h4>City Link</h4>
+				<p>Route: Bengaluru → Chennai</p>
+				<p>Time: 09:30 AM – 01:30 AM</p>
+				<p>Seat Type: Sleeper</p>
+				<p>AC Type: AC</p>
+				<p>Price: ₹2100</p>
+				<button class="book-btn">Book Now</button>
+			</div>
+			
+			<div class="bus-card">
+				<h4>Night Rider</h4>
+				<p>Route: Chennai → Bengaluru</p>
+				<p>Time: 10:00 PM – 06:00 AM</p>
+				<p>Seat Type: Semi-Sleeper, Sleeper</p>
+				<p>AC Type: AC</p>
+				<p>Price: ₹1800</p>
+				<button class="book-btn">Book Now</button>
+			</div> -->
+		</div>
+		<script th:src="@{/js/lib/jquery-3.7.1.js}"></script>
+		<script th:src="@{/js/src/scriptBusesList.js}"></script>
+        		
+	</body>
+</html>
