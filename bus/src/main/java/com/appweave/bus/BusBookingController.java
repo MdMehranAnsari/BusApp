@@ -29,4 +29,14 @@ public class BusBookingController {
 		model.addAttribute("busesList", busService.getBusesListJSON(departureCity, arrivalCity, date, seatType, isAC, departureSlot));
 		return "busesListPage";
 	}
+	
+	@GetMapping("/bookings/search/{busId}")
+	public String showSeatSelectionPage(@PathVariable String busId, @RequestParam String date, @RequestParam String departureCity, @RequestParam String arrivalCity, Model model)
+	{
+		model.addAttribute("currentBus", busService.getBusJSONById(busId, date).toString());
+		model.addAttribute("departureCity", departureCity);
+		model.addAttribute("arrivalCity", arrivalCity);
+		
+		return "seatSelectionPage";
+	}
 }

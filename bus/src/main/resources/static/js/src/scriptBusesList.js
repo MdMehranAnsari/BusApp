@@ -51,7 +51,6 @@ $(document).ready(function () {
 			
 			let str = '';
 			$.each(busesList.buses, function(key1, bus) {
-				console.log(bus);
 				let departureTime = "";
 				let arrivalTime = "";
 				$.each(bus.stops, function(key2, stop) {
@@ -68,11 +67,10 @@ $(document).ready(function () {
 					+ '<p>Seat Type: ' + bus.seatTypes + '</p>' + '\n'
 					+ '<p>AC Type: ' + ((bus.isAC === true)?'AC':'Non AC') + '</p>' + '\n'
 					+ '<p>Price: ' +  bus.price + '</p>' + '\n'
-					+ '<button class="book-btn">Book Now</button>' + '\n'
+					+ '<button id="' + bus.busId + '" class="book-btn">Book Now</button>' + '\n'
 					+ '</div>' + '\n';
-					console.log(str);
 			});
-			
+			console.log(str);
 			$('.bus-listings').append(str);
 			//document.querySelector('.bus-listings').innerHTML += str;
 	    },
@@ -82,10 +80,18 @@ $(document).ready(function () {
 	    },
 	});
 	
+	$(document).on("click", ".book-btn", function(event) {
+		let newURL = new URL("bookings/search/" + event.target.id, url1.origin);
+		newURL.searchParams.append("departureCity", params.get("departureCity"));
+		newURL.searchParams.append("arrivalCity", params.get("arrivalCity"));
+		newURL.searchParams.append("date", params.get("date"));
+		window.location.href = newURL;
+	});
+	
 	function renderBusesList(busesList) {
-		let str = '';
+		
+		let str = '<h2>Available Buses</h2>' + '\n';
 		$.each(busesList.buses, function(key1, bus) {
-			console.log(bus);
 			let departureTime = "";
 			let arrivalTime = "";
 			$.each(bus.stops, function(key2, stop) {
@@ -102,31 +108,59 @@ $(document).ready(function () {
 				+ '<p>Seat Type: ' + bus.seatTypes + '</p>' + '\n'
 				+ '<p>AC Type: ' + ((bus.isAC === true)?'AC':'Non AC') + '</p>' + '\n'
 				+ '<p>Price: ' +  bus.price + '</p>' + '\n'
-				+ '<button class="book-btn">Book Now</button>' + '\n'
+				+ '<form action="/bookings/search/' + bus.busId + '?date=' + params.get("date") + '">' + '\n'
+					+ '<button id="' + bus.busId + '" class="book-btn">Book Now</button>' + '\n'
+				+ '</form>' + '\n'
 				+ '</div>' + '\n';
-				console.log(str);
 		});
 		
 		//$('.bus-listings').append(str);
-		$('.bus-listings').innerHTML = str;
+		document.querySelector('.bus-listings').innerHTML = str;
+	}
+	
+	function getSlot(time) {
+		let hour = +(time.substring(0,2));
+		if(hour>6 && hour<12)
+			return "Morning";
+		else if(hour>=12 && hour<16)
+			return "Afternoon";
+		else if(hour>16 && hour<20)
+			return "Evening";
+		else
+			return "Night";
 	}
 	
 	function initializeSeatTypeFilter() {
-		document.getElementById('normal').checked = false;
-		document.getElementById('semi-sleeper').checked = false;
-		document.getElementById('sleeper').checked = false;
+		if(document.getElementById('normal').checked)
+			$('#normal').click();
+		
+		if(document.getElementById('semi-sleeper').checked)
+			$('#semi-sleeper').click();
+		
+		if(document.getElementById('sleeper').checked)
+			$('#sleeper').click();
 	}
 		
 	function initializeACTypeFilter()	{
-		document.getElementById('ac').checked = false;
-		document.getElementById('non-ac').checked = false;
+		if(document.getElementById('ac').checked)
+			$('#ac').click();
+		
+		if(document.getElementById('non-ac').checked)
+			$('#non-ac').click();
 	}
 	
 	function initializeDepartureSlotFilter()	{
-		document.getElementById('morning').checked = false;
-		document.getElementById('afternoon').checked = false;
-		document.getElementById('evening').checked = false;
-		document.getElementById('night').checked = false;
+		if(document.getElementById('morning').checked)
+			$('#morning').click();
+		
+		if(document.getElementById('afternoon').checked)
+			$('#afternoon').click();
+		
+		if(document.getElementById('evening').checked)
+			$('#evening').click();
+		
+		if(document.getElementById('night').checked)
+			$('#night').click();
 	}
 	
 	
@@ -143,11 +177,11 @@ $(document).ready(function () {
 				
 				let isValid = false;
 				$.each(bus.seatTypes, function(key2, seatType) {
-					if(seatType.toUpperCase() === $(event.target.id).value.toUpperCase()) {
+					if(seatType.seatNummber.toUpperCase() === $(event.target.id).value.toUpperCase()) {
 						isValid = true;
 					}
 				});
-				if(!isValid) busesToRender.totalSeats--;
+				if(!isValid) busesToRender.totalBuses--;
 				return isValid;
 			});
 		}
@@ -163,7 +197,7 @@ $(document).ready(function () {
 				
 				if(!isPresent) {
 					busesToRender['buses'].push(bus);
-					busesToRender.totalSeats++;
+					busesToRender.totalBuses++;
 				}
 			});
 		}
@@ -177,11 +211,16 @@ $(document).ready(function () {
 		
 		initializeACTypeFilter();
 		
+		let busesToRender = renderedBuses;
 		if(checkStatus) {
 			document.getElementById(event.target.id).checked = true;
 			
 			busesToRender.buses = renderedBuses.buses.filter(function(bus) {
-				return (bus.isAC.toString() === (document.getElementById(event.target.id).value === "AC").toString()); 
+				if(!(bus.isAC.toString() === ((document.getElementById(event.target.id).value === "AC")?"true":"false")))
+					busesToRender.totalBuses--;
+				
+				
+				return (bus.isAC.toString() === ((document.getElementById(event.target.id).value === "AC")?"true":"false")); 
 			});
 		}
 		else {
@@ -189,14 +228,14 @@ $(document).ready(function () {
 							
 				let isPresent = false;
 				$.each(renderedBuses.buses, function(key2, renderedBus) {					
-					if(renderedBus.isAC.toString() === bus.isAC.toString()) {
+					if(renderedBus.busId.toUpperCase() === bus.busId.toUpperCase()) {
 						isPresent = true;
 					}
 				});
 				
 				if(!isPresent) {
 					busesToRender['buses'].push(bus);
-					busesToRender.totalSeats++;
+					busesToRender.totalBuses++;
 				}
 			});
 		}
@@ -210,8 +249,42 @@ $(document).ready(function () {
 		
 		initializeDepartureSlotFilter();
 		
-		if(checkStatus)
+		let busesToRender = renderedBuses;
+		if(checkStatus) {
 			document.getElementById(event.target.id).checked = true;
+			
+			busesToRender.buses = renderedBuses.buses.filter(function(bus) {
+				
+				let isValid = false;
+				$.each(bus.stops, function(key2, stop) {
+					if(stop.stopName.toUpperCase() === params.get('departureCity').toUpperCase()) {
+						if(getSlot(stop.departureTime).toUpperCase() === document.getElementById(event.target.id).value.toUpperCase()) {
+							isValid = true;
+						}
+					}
+				});
+				if(!isValid) busesToRender.totalBuses--;
+				return isValid;
+			});
+		}
+		else {
+			$.each(allBusesData.buses, function(key1, bus) {
+										
+				let isPresent = false;
+				$.each(renderedBuses.buses, function(key2, renderedBus) {					
+					if(renderedBus.busId.toUpperCase() === bus.busId.toUpperCase()) {
+						isPresent = true;
+					}
+				});
+				
+				if(!isPresent) {
+					busesToRender['buses'].push(bus);
+					busesToRender.totalBuses++;
+				}
+			});
+		}
+		
+		
 	});
 	
 	
