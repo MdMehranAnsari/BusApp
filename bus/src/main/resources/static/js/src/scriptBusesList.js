@@ -130,47 +130,142 @@ $(document).ready(function () {
 			return "Night";
 	}
 	
-	function initializeSeatTypeFilter() {
-		if(document.getElementById('normal').checked)
-			$('#normal').click();
-		
-		if(document.getElementById('semi-sleeper').checked)
-			$('#semi-sleeper').click();
-		
-		if(document.getElementById('sleeper').checked)
-			$('#sleeper').click();
-	}
-		
-	function initializeACTypeFilter()	{
-		if(document.getElementById('ac').checked)
-			$('#ac').click();
-		
-		if(document.getElementById('non-ac').checked)
-			$('#non-ac').click();
+	function applySeatTypeFilter(id) {
+		renderedBuses.buses = renderedBuses.buses.filter(function(bus) {
+						
+			let isValid = false;
+			$.each(bus.seatTypes, function(key2, seatType) {
+				if(seatType.toUpperCase() === document.getElementById(id).value.toUpperCase()) {
+					isValid = true;
+				}
+			});
+			if(!isValid) renderedBuses.totalBuses--;
+			return isValid;
+		});
 	}
 	
-	function initializeDepartureSlotFilter()	{
-		if(document.getElementById('morning').checked)
-			$('#morning').click();
+	function applyACTypeFilter(id) {
+		renderedBuses.buses = renderedBuses.buses.filter(function(bus) {
+			if(!(bus.isAC.toString() === ((document.getElementById(id).value === "AC")?"true":"false")))
+				renderedBuses.totalBuses--;
+						
+			return (bus.isAC.toString() === ((document.getElementById(id).value === "AC")?"true":"false")); 
+		});
+	}
+	
+	function applyDepartureSlotFilter(id) {
+		renderedBuses.buses = renderedBuses.buses.filter(function(bus) {
+						
+			let isValid = false;
+			$.each(bus.stops, function(key2, stop) {
+				if(stop.stopName.toUpperCase() === params.get('departureCity').toUpperCase()) {
+					if(getSlot(stop.departureTime).toUpperCase() === document.getElementById(id).value.toUpperCase()) {
+						isValid = true;
+					}
+				}
+			});
+			if(!isValid) renderedBuses.totalBuses--;
+			return isValid;
+		});
+	}
+	
+	function initializeSeatTypeFilter(id) {
+		if(document.getElementById('normal').checked) {
+			document.getElementById('normal').checked = false;
+			
+			if(id === null || id === 'normal') {
+				document.getElementById('normal').checked = true;
+				applySeatTypeFilter('normal');
+			}
+		}
 		
-		if(document.getElementById('afternoon').checked)
-			$('#afternoon').click();
+		if(document.getElementById('semi-sleeper').checked) {
+			document.getElementById('semi-sleeper').checked = false;
+			
+			if(id === null || id === 'semi-sleeper') {
+				document.getElementById('semi-sleeper').checked = true;
+				applySeatTypeFilter('semi-sleeper');
+			}
+		}
 		
-		if(document.getElementById('evening').checked)
-			$('#evening').click();
+		if(document.getElementById('sleeper').checked) {
+			document.getElementById('sleeper').checked = false;
+			
+			if(id === null || id === 'sleeper') {
+				document.getElementById('sleeper').checked = true;
+				applySeatTypeFilter('sleeper');
+			}
+		}
+	}
 		
-		if(document.getElementById('night').checked)
-			$('#night').click();
+	function initializeACTypeFilter(id) {
+		if(document.getElementById('ac').checked) {
+			document.getElementById('ac').checked = false;
+			
+			if(id === null || id === 'ac') {
+				document.getElementById('ac').checked = true;
+				applyACTypeFilter('ac');
+			}
+		}
+		
+		if(document.getElementById('non-ac').checked) {
+			document.getElementById('non-ac').checked = false;
+			
+			if(id === null || id === 'non-ac') {
+				document.getElementById('non-ac').checked = true;
+				applyACTypeFilter('non-ac');
+			}
+		}
+	}
+	
+	function initializeDepartureSlotFilter(id)	{
+		if(document.getElementById('morning').checked) {
+			document.getElementById('morning').checked = false;
+			
+			if(id === null || id === 'morning') {
+				document.getElementById('morning').checked = true;
+				applyDepartureSlotFilter('morning');
+			}
+		}
+		
+		if(document.getElementById('afternoon').checked) {
+			document.getElementById('afternoon').checked = false;
+			
+			if(id === null || id === 'afternoon') {
+				document.getElementById('afternoon').checked = true;
+				applyDepartureSlotFilter('afternoon');
+			}
+		}
+		
+		if(document.getElementById('evening').checked) {
+			document.getElementById('evening').checked = false;
+			
+			if(id === null || id === 'evening') {
+				document.getElementById('evening').checked = true;
+				applyDepartureSlotFilter('evening');
+			}
+		}
+		
+		if(document.getElementById('night').checked) {
+			document.getElementById('night').checked = false;
+			
+			if(id === null || id === 'night') {
+				document.getElementById('night').checked = true;
+				applyDepartureSlotFilter('night');
+			}
+		}
 	}
 	
 	
 	$('#seatType').change(function(event) {
-		let checkStatus = document.getElementById(event.target.id).checked;
+		//let checkStatus = document.getElementById(event.target.id).checked;
+		renderedBuses = JSON.parse(JSON.stringify(allBusesData));
+		initializeSeatTypeFilter(event.target.id);
+		initializeACTypeFilter(null);
+		initializeDepartureSlotFilter(null);
 		
-		initializeSeatTypeFilter();
 		
-		let busesToRender = renderedBuses;
-		if(checkStatus) {
+		/*if(checkStatus) {
 			document.getElementById(event.target.id).checked = true;			
 				
 			busesToRender.buses = renderedBuses.buses.filter(function(bus) {
@@ -200,19 +295,24 @@ $(document).ready(function () {
 					busesToRender.totalBuses++;
 				}
 			});
-		}
+		}*/
 		
-		renderBusesList(busesToRender);
-		renderedBuses = busesToRender;
+		renderBusesList(renderedBuses);
+		//renderedBuses = busesToRender;
 	});
 	
 	$('#acType').change(function(event) {
-		let checkStatus = document.getElementById(event.target.id).checked;
+		//let checkStatus = document.getElementById(event.target.id).checked;
+		renderedBuses = JSON.parse(JSON.stringify(allBusesData));
+
+		console.log(renderedBuses);
+		console.log(allBusesData);
+		initializeSeatTypeFilter(null);
+		initializeACTypeFilter(event.target.id);
+		initializeDepartureSlotFilter(null);
 		
-		initializeACTypeFilter();
 		
-		let busesToRender = renderedBuses;
-		if(checkStatus) {
+		/*if(checkStatus) {
 			document.getElementById(event.target.id).checked = true;
 			
 			busesToRender.buses = renderedBuses.buses.filter(function(bus) {
@@ -238,19 +338,22 @@ $(document).ready(function () {
 					busesToRender.totalBuses++;
 				}
 			});
-		}
+		}*/
 		
-		renderBusesList(busesToRender);
-		renderedBuses = busesToRender;
+		renderBusesList(renderedBuses);
+		//renderedBuses = busesToRender;
 	});
 	
 	$('#departureSlot').change(function(event) {
-		let checkStatus = document.getElementById(event.target.id).checked;
+		//let checkStatus = document.getElementById(event.target.id).checked;
 		
-		initializeDepartureSlotFilter();
+		renderedBuses = JSON.parse(JSON.stringify(allBusesData));
+		initializeSeatTypeFilter(null);
+		initializeACTypeFilter(null);
+		initializeDepartureSlotFilter(event.target.id);
 		
-		let busesToRender = renderedBuses;
-		if(checkStatus) {
+		
+		/*if(checkStatus) {
 			document.getElementById(event.target.id).checked = true;
 			
 			busesToRender.buses = renderedBuses.buses.filter(function(bus) {
@@ -282,9 +385,9 @@ $(document).ready(function () {
 					busesToRender.totalBuses++;
 				}
 			});
-		}
+		}*/
 		
-		
+		renderBusesList(renderedBuses);
 	});
 	
 	
