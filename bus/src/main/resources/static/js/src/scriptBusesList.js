@@ -70,7 +70,7 @@ $(document).ready(function () {
 					+ '<button id="' + bus.busId + '" class="book-btn">Book Now</button>' + '\n'
 					+ '</div>' + '\n';
 			});
-			console.log(str);
+			
 			$('.bus-listings').append(str);
 			//document.querySelector('.bus-listings').innerHTML += str;
 	    },
@@ -305,8 +305,6 @@ $(document).ready(function () {
 		//let checkStatus = document.getElementById(event.target.id).checked;
 		renderedBuses = JSON.parse(JSON.stringify(allBusesData));
 
-		console.log(renderedBuses);
-		console.log(allBusesData);
 		initializeSeatTypeFilter(null);
 		initializeACTypeFilter(event.target.id);
 		initializeDepartureSlotFilter(null);

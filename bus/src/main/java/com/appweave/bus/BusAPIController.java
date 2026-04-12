@@ -1,5 +1,7 @@
 package com.appweave.bus;
 
+import java.io.UnsupportedEncodingException;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +35,9 @@ public class BusAPIController {
 	}
 	
 	@PostMapping("/api/bookings")
-	public String bookBus(@RequestBody String bookingDetails)
+	public String bookBus(@RequestBody String bookingDetails) throws UnsupportedEncodingException
 	{
-		
-		return busService.bookBus(bookingDetails).toString();
+		System.out.println(bookingDetails);
+		return busService.bookBus(java.net.URLDecoder.decode(bookingDetails, "UTF-8")).toString();
 	}
 }

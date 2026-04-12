@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Bus Booking Confirmation</title>
+		<link rel="stylesheet" th:href="@{/css/stylePassengerDetails.css}">
+	</head>
+	
+	<body>
+		<div class="container">
+			<h2>Bus Ticket Booking</h2>
+	
+			<!-- Passenger Details -->
+			<div class="section">
+				
+			</div>
+	
+			<!-- Bus Details -->
+			<div class="bus-section">
+			
+			</div>
+	
+			<!-- Booking Summary -->
+			<div class="section-summary">
+				
+			</div>
+	
+			<!-- Confirm Button -->
+			<button class="confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+		</div>
+	
+		
+		<script>
+			const seatsString = "[[${seatsString}]]";
+			const currentBus = "[[${currentBus}]]".replaceAll("&quot;", '"');
+			const departureCity = "[[${departureCity}]]";
+			const arrivalCity = "[[${arrivalCity}]]";
+		</script>
+		<script th:src="@{/js/lib/jquery-3.7.1.js}"></script>
+		<script th:src="@{/js/src/scriptPaymentConfirmation.js}"></script>
+	</body>
+</html>

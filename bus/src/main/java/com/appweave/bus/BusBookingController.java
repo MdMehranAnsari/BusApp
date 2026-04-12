@@ -25,7 +25,6 @@ public class BusBookingController {
 	public String showBusesList(@RequestParam String departureCity, @RequestParam String arrivalCity, @RequestParam String date, @RequestParam(required=false) String seatType, @RequestParam(required=false) String isAC, @RequestParam(required=false) String departureSlot, Model model)
 	{
 		date = date.replace("-", "");
-		System.out.println(date);
 		model.addAttribute("busesList", busService.getBusesListJSON(departureCity, arrivalCity, date, seatType, isAC, departureSlot));
 		return "busesListPage";
 	}
@@ -38,5 +37,18 @@ public class BusBookingController {
 		model.addAttribute("arrivalCity", arrivalCity);
 		
 		return "seatSelectionPage";
+	}
+	
+	@GetMapping("/bookings/confirmation")
+	public String showPassengerDetails(@RequestParam String busId, @RequestParam String seatsString, @RequestParam String date, @RequestParam String departureCity, @RequestParam String arrivalCity, Model model)
+	{
+		model.addAttribute("currentBus", busService.getBusJSONById(busId, date).toString());
+		model.addAttribute("seatsString", seatsString);
+		model.addAttribute("departureCity", departureCity);
+		model.addAttribute("arrivalCity", arrivalCity);
+		
+		System.out.println(seatsString);
+		
+		return "paymentConfirmation";
 	}
 }

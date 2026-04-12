@@ -179,7 +179,6 @@ public class BusService {
 			finalBusesArray.put(busJSON);
 		}
 		finalBusesJSON.put("buses", finalBusesArray);
-		System.out.println(finalBusesJSON.toString());
 		
 		template.insert(finalBusesJSON.toString(), "SeatReservationsByDate");
 	}
@@ -342,7 +341,6 @@ public class BusService {
 						+ "} ]"
 					+ "}";
 			
-				System.out.println(str);
 				// 
 				//BasicQuery query = new BasicQuery(str);
 				System.out.println(template.executeCommand(str));
